@@ -9,6 +9,12 @@ our $WHILE_MAX = 1000;
 # only true when inside JAVASCRIPT blocks
 our $INJAVASCRIPT = 0;
 
+sub tpl_output {
+    my $txt = shift;
+
+    return "output.push($txt);";
+}
+
 sub template {
     my ($class, $block) = @_;
 
@@ -18,7 +24,7 @@ sub template {
 function(context) {
     if (! context) throw('Jemplate function called without context\\n');
     var stash = context.stash;
-    var output = '';
+    var output = [];
 
     try {
 $block
@@ -28,11 +34,11 @@ $block
         throw(error);
     }
 
-    return output;
+    return output.join('');
 }
 ...
 }
- 
+
 #------------------------------------------------------------------------
 # textblock($text)
 #------------------------------------------------------------------------
@@ -40,7 +46,7 @@ $block
 sub textblock {
     my ($class, $text) = @_;
     return $text if $INJAVASCRIPT;
-    return "$OUTPUT " . $class->text($text) . ';';
+    return tpl_output($class->text($text));
 }
 
 #------------------------------------------------------------------------
@@ -134,17 +140,16 @@ sub filenames {
         $names = shift @$names;
     }
     return $names;
-}   
-    
-        
+}
+
 #------------------------------------------------------------------------
 # get($expr)                                                    [% foo %]
 #------------------------------------------------------------------------
 
 sub get {
     my ($class, $expr) = @_;
-    return "$OUTPUT $expr;";
-}   
+    return tpl_output($expr);
+}
 
 sub block {
     my ($class, $block) = @_;
@@ -206,10 +211,9 @@ sub include {
     my $hash = shift @$args;
     $file = $class->filenames($file);
     $file .= @$hash ? ', { ' . join(', ', @$hash) . ' }' : '';
-    return "$OUTPUT context.include($file);"; 
-}   
-    
-        
+    return tpl_output("context.include($file)");
+}
+
 #------------------------------------------------------------------------
 # process(\@nameargs)                    [% PROCESS template foo = bar %] 
 #         # => [ [ $file, ... ], \@args ]
@@ -221,10 +225,9 @@ sub process {
     my $hash = shift @$args;
     $file = $class->filenames($file);
     $file .= @$hash ? ', { ' . join(', ', @$hash) . ' }' : '';
-    return "$OUTPUT context.process($file);"; 
-}   
-    
-        
+    return tpl_output("context.process($file)");
+}
+
 #------------------------------------------------------------------------
 # if($expr, $block, $else)                             [% IF foo < bar %]
 #                                                         ...
@@ -232,18 +235,18 @@ sub process {
 #                                                         ...
 #                                                      [% END %]
 #------------------------------------------------------------------------
-    
+
 sub if {
     my ($class, $expr, $block, $else) = @_;
     my @else = $else ? @$else : ();
     $else = pop @else;
 
     my $output = "if ($expr) {\n$block\n}\n";
-        
+
     foreach my $elsif (@else) {
         ($expr, $block) = @$elsif;
         $output .= "else if ($expr) {\n$block\n}\n";
-    }   
+    }
     if (defined $else) {
         $output .= "else {\n$else\n}\n";
     }
@@ -338,15 +341,17 @@ sub wrapper {
     push(@$hash, "'content': output");
     $file .= @$hash ? ', { ' . join(', ', @$hash) . ' }' : '';
 
-    return <<EOF;
+    my $txt = <<EOF;
 
 // WRAPPER
-$OUTPUT (function() {
-    var output = '';
+(function() {
+    var output = [];
 $block;
+    output = output.join('');
     return context.include($file);
-})();
+})()
 EOF
+    return tpl_output($txt);
 }
 
 sub multi_wrapper {
@@ -358,19 +363,22 @@ sub multi_wrapper {
     $file = join(', ', reverse @$file);
 #    print STDERR "multi wrapper: $file\n";
 
-    return <<EOF;
+    my $txt = <<EOF;
 
 // WRAPPER
-$OUTPUT (function() {
-    var output = '';
+(function() {
+    var output = [];
 $block;
-    var files = new Array($file);
-    for (var i = 0; i < files.length; i++) {
+    output = output.join('');
+    var files = [$file],
+        num = files.length;
+    for (var i = 0; i < num; i++) {
         output = context.include(files[i]$hash);
     }
     return output;
-})();
+})()
 EOF
+    return tpl_output($txt);
 }
 
 
@@ -381,8 +389,8 @@ EOF
 #------------------------------------------------------------------------
 
 sub while {
-    my ($class, $expr, $block) = @_; 
-    
+    my ($class, $expr, $block) = @_;
+
     return <<EOF;
     
 // WHILE
@@ -479,7 +487,7 @@ sub throw {
 #------------------------------------------------------------------------
 
 sub clear {
-    return "output = '';";
+    return "output = [];";
 }
 
 
@@ -491,14 +499,14 @@ sub clear {
 
 sub break {
     return 'break;';
-}                       
-        
+}
+
 #------------------------------------------------------------------------
 # return()                                                   [% RETURN %]
 #------------------------------------------------------------------------
 
 sub return {
-    return "return output;"
+    return "return output.join('');"
 }
 
 
@@ -508,7 +516,7 @@ sub return {
 
 sub stop {
     return "throw('Jemplate.STOP\\n' + output);";
-}   
+}
 
 
 #------------------------------------------------------------------------
@@ -558,17 +566,18 @@ sub filter {
     $args = $args ? "$args, $alias" : ", null, $alias"
         if $alias;
     $name .= ", $args" if $args;
-    return <<EOF;
+    my $txt = <<EOF;
 
 // FILTER
-$OUTPUT (function() {
-    var output = '';
+(function() {
+    var output = [];
 
 $block
 
-    return context.filter(output, $name);
-})();
+    return context.filter(output.join(''), $name);
+})()
 EOF
+    return tpl_output($txt);
 }
 
 sub quoted {
@@ -593,7 +602,7 @@ sub macro {
 
 //MACRO
 stash.set('$ident', function () {
-    var output = '';
+    var output = [];
     var args = {};
     var fargs = Array.prototype.slice.call(arguments);
     $args;
@@ -615,7 +624,7 @@ $block
     }
 
     context.stash.declone();
-    return output;
+    return output.join('');
 });
 
 EOF
@@ -627,7 +636,7 @@ EOF
 //MACRO
 
 stash.set('$ident', function () {
-    var output = '';
+    var output = [];
     var args = {};
     
     var fargs = Array.prototype.slice.call(arguments);
@@ -644,8 +653,8 @@ $block
         throw(error);
     }
 
-    context.stash.declone(); 
-    return output;});
+    context.stash.declone();
+    return output.join('');});
 
 EOF
     }

@@ -228,10 +228,11 @@ proto.plugin = function(name, args) {
 }
 
 proto.filter = function(text, name, args) {
+    var f;
     if (name == 'null')
         name = "null_filter";
-    if (typeof this.__filter__.filters[name] == "function")
-        return this.__filter__.filters[name](text, args, this);
+    if (typeof (f = this.__filter__.filters[name]) == "function")
+        return f(text, args, this);
     else
         throw "Unknown filter name ':" + name + "'";
 }
