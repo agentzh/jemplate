@@ -14,17 +14,14 @@ Middle
 [% END %]
 Bottom
 --- js
-output += 'Top\n';
+output.push('Top\n');
 //line 4 "(unknown template)"
-
-// WRAPPER
-output += (function() {
-    var output = '';
-output += '\nMiddle\n';;
-    return context.include('wrapper.tt', { 'content': output });
-})();
-
-output += '\nBottom\n';
+output.push((function() { // WRAPPER
+    var output = [];
+output.push('\nMiddle\n');;
+    return context.include('wrapper.tt', { 'content': output.join('') });
+})());
+output.push('\nBottom\n');
 
 === WRAPPER with args
 --- tt
@@ -34,20 +31,17 @@ My name is [% x %]
 [% END %]
 Bottom
 --- js
-output += 'Top\n';
+output.push('Top\n');
 //line 4 "(unknown template)"
-
-// WRAPPER
-output += (function() {
-    var output = '';
-output += '\nMy name is ';
+output.push((function() { // WRAPPER
+    var output = [];
+output.push('\nMy name is ');
 //line 3 "(unknown template)"
-output += stash.get('x');
-output += '\n';;
-    return context.include('wrapper.tt', { 'x': 'yann', 'content': output });
-})();
-
-output += '\nBottom\n';
+output.push(stash.get('x'));
+output.push('\n');;
+    return context.include('wrapper.tt', { 'x': 'yann', 'content': output.join('') });
+})());
+output.push('\nBottom\n');
 
 === WRAPPER with args (inherited)
 --- tt
@@ -58,26 +52,23 @@ My name is [% first_name %] [% last_name %]
 [% END %]
 Bottom
 --- js
-output += 'Top\n';
+output.push('Top\n');
 //line 2 "(unknown template)"
 stash.set('last_name', 'Kerhervé');
-output += '\n';
+output.push('\n');
 //line 5 "(unknown template)"
-
-// WRAPPER
-output += (function() {
-    var output = '';
-output += '\nMy name is ';
+output.push((function() { // WRAPPER
+    var output = [];
+output.push('\nMy name is ');
 //line 4 "(unknown template)"
-output += stash.get('first_name');
-output += ' ';
+output.push(stash.get('first_name'));
+output.push(' ');
 //line 4 "(unknown template)"
-output += stash.get('last_name');
-output += '\n';;
-    return context.include('wrapper.tt', { 'first_name': 'yann', 'content': output });
-})();
-
-output += '\nBottom\n';
+output.push(stash.get('last_name'));
+output.push('\n');;
+    return context.include('wrapper.tt', { 'first_name': 'yann', 'content': output.join('') });
+})());
+output.push('\nBottom\n');
 
 === WRAPPER multiple + args
 --- tt
@@ -87,22 +78,21 @@ How's the life ? life is [% life %]
 [% END %]
 Bottom
 --- js
-output += 'Top\n';
+output.push('Top\n');
 //line 4 "(unknown template)"
-
-// WRAPPER
-output += (function() {
-    var output = '';
-output += '\nHow\'s the life ? life is ';
+output.push((function() { // WRAPPER
+    var output = [];
+output.push('\nHow\'s the life ? life is ');
 //line 3 "(unknown template)"
-output += stash.get('life');
-output += '\n';;
-    var files = new Array('wrapper2.tt', 'wrapper.tt');
-    for (var i = 0; i < files.length; i++) {
+output.push(stash.get('life'));
+output.push('\n');;
+    output = output.join('');
+    var files = ['wrapper2.tt', 'wrapper.tt'],
+        num = files.length;
+    for (var i = 0; i < num; i++) {
         output = context.include(files[i], { 'life': 'good', 'content': output });
     }
     return output;
-})();
-
-output += '\nBottom\n';
+})());
+output.push('\nBottom\n');
 

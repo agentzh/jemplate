@@ -10,8 +10,8 @@ __END__
 [%# foo.bar %]
 [% foo.baz %]
 --- js
-output += '\n';
+output.push('\n');
 //line 2 "(unknown template)"
-output += stash.get(['foo', 0, 'baz', 0]);
-output += '\n';
+output.push(stash.get(['foo', 0, 'baz', 0]));
+output.push('\n');
 

@@ -13,18 +13,18 @@ Hello [% name %], and good day!
 function(context) {
     if (! context) throw('Jemplate function called without context\n');
     var stash = context.stash;
-    var output = '';
+    var output = [];
 
     try {
-output += 'Hello ';
+output.push('Hello ');
 //line 1 "(unknown template)"
-output += stash.get('name');
-output += ', and good day!\n';
+output.push(stash.get('name'));
+output.push(', and good day!\n');
     }
     catch(e) {
         var error = context.set_error(e, output);
         throw(error);
     }
 
-    return output;
+    return output.join('');
 }

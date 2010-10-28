@@ -16,15 +16,15 @@ __END__
 stash.set('foo', 'foo');
 //line 1 "test_template"
 stash.set('bar', 'bar');
-output += '\n';
+output.push('\n');
 //line 1 "test_template"
-output += stash.get('foo') + '/' + stash.get('bar');
-output += '\n';
+output.push(stash.get('foo') + '/' + stash.get('bar'));
+output.push('\n');
 
 === simple string
 --- tt
 [% "simple" %]
 --- js
 //line 1 "test_template"
-output += 'simple';
-output += '\n';
+output.push('simple');
+output.push('\n');

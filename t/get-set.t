@@ -11,5 +11,5 @@ __END__
 [% food.barge -%]
 --- js
 //line 1 "(unknown template)"
-output += stash.get(['food', 0, 'barge', 0]);
+output.push(stash.get(['food', 0, 'barge', 0]));
 

@@ -23,7 +23,7 @@ __END__
 
 //MACRO
 stash.set('simple', function () {
-    var output = '';
+    var output = [];
     var args = {};
     var fargs = Array.prototype.slice.call(arguments);
     args['param1'] = fargs.shift();args['param2'] = fargs.shift();
@@ -38,19 +38,19 @@ stash.set('simple', function () {
     context.stash.clone(args);
     try {
 //line 1 "test_template"
-output += stash.get('param1')  + stash.get('param2');
+output.push(stash.get('param1')  + stash.get('param2'));
 ===
 --- macro_call
 [% simple('1','2') %]
 --- js -trim
 //line 1 "test_template"
-output += stash.get(['simple', [ '1', '2' ]]);
-output += '\n';
+output.push(stash.get(['simple', [ '1', '2' ]]));
+output.push('\n');
 ===
 --- macro_call_with_complex_arguments
 [% simple('1' _ '2','3') %]
 
 --- js
 //line 1 "test_template"
-output += stash.get(['simple', [ '1'  + '2', '3' ]]);
-output += '\n';
+output.push(stash.get(['simple', [ '1'  + '2', '3' ]]));
+output.push('\n');

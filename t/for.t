@@ -17,7 +17,7 @@ Bottom
 --- js
 //line 1 "(unknown template)"
 stash.set('list', [ 1, 3, 5 ]);
-output += 'Top\n';
+output.push('Top\n');
 //line 5 "(unknown template)"
 
 // FOREACH 
@@ -33,7 +33,7 @@ output += 'Top\n';
     try {
         while (! done) {
             stash.data['x'] = value;
-output += 'Middle\n';;
+output.push('Middle\n');;
             retval = list.get_next();
             value = retval[0];
             done = retval[1];
@@ -45,5 +45,5 @@ output += 'Middle\n';;
     stash.set('loop', oldloop);
 })();
 
-output += 'Bottom\n';
+output.push('Bottom\n');
 

@@ -33,12 +33,12 @@ alert("this is a test");
 More stuff here
 
 --- js
-output += 'Stuff here\n';
+output.push('Stuff here\n');
 //line 4 "test_template"
 
 alert("this is a test");
 
-output += '\nMore stuff here\n';
+output.push('\nMore stuff here\n');
 
 === verify --nojavascript will cause error
 --- tt_nojs
@@ -48,5 +48,5 @@ alert("this is a test");
 [% END %]
 More stuff here
 
---- js
+--- js chomp
 line 4: EVAL_JAVASCRIPT has not been enabled, cannot process [% JAVASCRIPT %] blocks

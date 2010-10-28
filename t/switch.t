@@ -16,22 +16,22 @@ Foo
 [%- END -%]
 Zot
 --- js
-output += 'Foo';
+output.push('Foo');
 //line X "(unknown template)"
 
     switch(stash.get('foo')) {
 case 'Bar':
 //line X "(unknown template)"
-output += 'Bar';
+output.push('Bar');
 break;
 
 default:
 //line X "(unknown template)"
-output += 'Baz';
+output.push('Baz');
 break;
 
     }
 
 
-output += 'Zot\n';
+output.push('Zot\n');
 

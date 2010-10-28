@@ -3,14 +3,14 @@ use t::TestJemplate tests => 5;
 my $input = "Foo <! bar !> baz!\n";
 
 my $unexpected = <<'...';
-output += 'Foo <! bar !> baz!\n';
+output.push('Foo <! bar !> baz!\n');
 ...
 
 my $expected = <<'...';
-output += 'Foo ';
+output.push('Foo ');
 //line 1 "test_template"
-output += stash.get('bar');
-output += ' baz!\n';
+output.push(stash.get('bar'));
+output.push(' baz!\n');
 ...
 
 #-------------------------------------------------------------------------------

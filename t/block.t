@@ -28,13 +28,13 @@ Bar
 Jemplate.templateMap['test_template'] = function(context) {
     if (! context) throw('Jemplate function called without context\n');
     var stash = context.stash;
-    var output = '';
+    var output = [];
 
     try {
-output += 'Foo\n';
+output.push('Foo\n');
 //line 2 "test_template"
-output += context.process('red_meat');
-output += 'Baz\n';
+output.push(context.process('red_meat'));
+output.push('Baz\n');
 
     }
     catch(e) {
@@ -42,23 +42,23 @@ output += 'Baz\n';
         throw(error);
     }
 
-    return output;
+    return output.join('');
 }
 
 Jemplate.templateMap['red_meat'] = function(context) {
     if (! context) throw('Jemplate function called without context\n');
     var stash = context.stash;
-    var output = '';
+    var output = [];
 
     try {
-output += '\nBar\n';
+output.push('\nBar\n');
     }
     catch(e) {
         var error = context.set_error(e, output);
         throw(error);
     }
 
-    return output;
+    return output.join('');
 }
 
 ===
@@ -77,27 +77,27 @@ foo is still [% foo %]
 --- js
 //line 1 "test_template"
 stash.set('foo', 10);
-output += '\n\nfoo is originally ';
+output.push('\n\nfoo is originally ');
 //line 3 "test_template"
-output += stash.get('foo');
-output += '\n';
+output.push(stash.get('foo'));
+output.push('\n');
 //line 4 "test_template"
-output += context.include('bar');
-output += '\nfoo is still ';
+output.push(context.include('bar'));
+output.push('\nfoo is still ');
 //line 5 "test_template"
-output += stash.get('foo');
-output += '\n\n';
+output.push(stash.get('foo'));
+output.push('\n\n');
 
-output += '\n';
+output.push('\n');
 
-output += '\n   foo was ';
+output.push('\n   foo was ');
 //line 8 "test_template"
-output += stash.get('foo');
-output += '\n   ';
+output.push(stash.get('foo'));
+output.push('\n   ');
 //line 9 "test_template"
 stash.set('foo', 20);
-output += '\n   foo is now ';
+output.push('\n   foo is now ');
 //line 10 "test_template"
-output += stash.get('foo');
-output += '\n';
+output.push(stash.get('foo'));
+output.push('\n');
 

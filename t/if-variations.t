@@ -11,7 +11,7 @@ __END__
 --- js
 //line 1 "(unknown template)"
 if (stash.get(['foo', 0, 'bar', 0, 'baz', 0])) {
-output += 'Foo';
+output.push('Foo');
 }
 
 === Second test
@@ -20,7 +20,7 @@ output += 'Foo';
 --- js
 //line 1 "(unknown template)"
 if (!(stash.get('foo'))) {
-output += 'Foo';
+output.push('Foo');
 }
 
 ===
@@ -29,7 +29,7 @@ output += 'Foo';
 --- js
 //line 1 "(unknown template)"
 if (stash.get('foo') || stash.get('bar')) {
-output += 'Foo';
+output.push('Foo');
 }
 
 ===
@@ -38,7 +38,7 @@ output += 'Foo';
 --- js
 //line 1 "(unknown template)"
 if (stash.get('foo') && stash.get('bar')) {
-output += 'Foo';
+output.push('Foo');
 }
 
 ===

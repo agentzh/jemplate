@@ -17,7 +17,7 @@ Foo
     Bar
 [%- END -%]
 --- js
-output += 'Foo';
+output.push('Foo');
 //line X "(unknown template)"
     
 // WHILE
@@ -26,14 +26,14 @@ while (--failsafe && ((stash.get('foo') == 'bar'))) {
 //line X "(unknown template)"
 if (1 == 2) {
 //line X "(unknown template)"
-return output;
+return output.join('');
 }
 else {
 //line X "(unknown template)"
 throw('Jemplate.STOP\n' + output);
 }
 
-output += '    Bar';
+output.push('    Bar');
 }
 if (! failsafe)
     throw("WHILE loop terminated (> 1000 iterations)\n")
@@ -50,7 +50,7 @@ Foo
     Bar
 [%- END -%]
 --- js
-output += 'Foo';
+output.push('Foo');
 //line X "(unknown template)"
     
 // WHILE
@@ -70,7 +70,7 @@ else {
 break;
 }
 
-output += '    Bar';
+output.push('    Bar');
 }
 if (! failsafe)
     throw("WHILE loop terminated (> 1000 iterations)\n")

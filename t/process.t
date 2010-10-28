@@ -12,10 +12,10 @@ Top
 [% PROCESS middle.tt %]
 Bottom
 --- js
-output += 'Top\n';
+output.push('Top\n');
 //line 2 "(unknown template)"
-output += context.process('middle.tt');
-output += '\nBottom\n';
+output.push(context.process('middle.tt'));
+output.push('\nBottom\n');
 
 === PROCESS with args
 --- tt
@@ -23,8 +23,8 @@ Top
 [% PROCESS middle.tt foo = 'xxx', bar = [1, 2] %]
 Bottom
 --- js
-output += 'Top\n';
+output.push('Top\n');
 //line 2 "(unknown template)"
-output += context.process('middle.tt', { 'foo': 'xxx', 'bar': [ 1, 2 ] });
-output += '\nBottom\n';
+output.push(context.process('middle.tt', { 'foo': 'xxx', 'bar': [ 1, 2 ] }));
+output.push('\nBottom\n');
 

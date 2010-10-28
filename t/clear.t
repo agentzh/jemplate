@@ -12,7 +12,7 @@ Bar
 [% CLEAR -%]
 Foo
 --- js
-output += 'Bar\n';
+output.push('Bar\n');
 //line 2 "(unknown template)"
-output = '';
-output += 'Foo\n';
+output = [];
+output.push('Foo\n');
