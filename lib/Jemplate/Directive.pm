@@ -338,19 +338,17 @@ sub wrapper {
     return $class->multi_wrapper($file, $hash, $block)
         if @$file > 1;
     $file = shift @$file;
-    push(@$hash, "'content': output");
+    push(@$hash, "'content': output.join('')");
     $file .= @$hash ? ', { ' . join(', ', @$hash) . ' }' : '';
 
     my $txt = <<EOF;
-
-// WRAPPER
-(function() {
+(function() { // WRAPPER
     var output = [];
 $block;
-    output = output.join('');
     return context.include($file);
 })()
 EOF
+    $txt =~ s/\s$//;
     return tpl_output($txt);
 }
 
@@ -364,9 +362,7 @@ sub multi_wrapper {
 #    print STDERR "multi wrapper: $file\n";
 
     my $txt = <<EOF;
-
-// WRAPPER
-(function() {
+(function() { // WRAPPER
     var output = [];
 $block;
     output = output.join('');
@@ -378,6 +374,7 @@ $block;
     return output;
 })()
 EOF
+    $txt =~ s/\s$//;
     return tpl_output($txt);
 }
 
